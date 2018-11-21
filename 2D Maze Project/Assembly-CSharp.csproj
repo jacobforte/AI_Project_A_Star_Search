@@ -61,7 +61,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\BaseMazeGenerator.cs" />
     <Compile Include="Assets\Scripts\PlayerMovement.cs" />
     <Reference Include="UnityEditor.StandardEvents">
       <HintPath>C:/Users/Jacob Forte/Documents/GitHub/AI_Project_A_Star_Search/2D Maze Project/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
