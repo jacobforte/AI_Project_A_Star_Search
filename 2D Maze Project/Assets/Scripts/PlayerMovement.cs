@@ -6,14 +6,18 @@ public class PlayerMovement : MonoBehaviour {
     public float moveTime = 0.1f;           //Time it takes to move the player
     public LayerMask blockingLayer;         //Layer used for collision detection
     public bool allowHumanMovement = true;  //Set this to false when we implement AI movement
-    public Transform exitNode;           //We need to keep track of the exit location
 
     private BoxCollider2D boxCollider;      //Necesary to collide with other objects, need to disable when raytracing
     private Rigidbody2D rb2D;               //Used to move our object
     private float inverseMoveTime;
     private bool isMoving;                  //Prevents input while character is moving
-    private Vector2 startingLocation;       //We need to keep track of the player's starting position.
-    private Vector2 exitLocation;
+    public bool IsMoving
+    {
+        get
+        {
+            return isMoving;
+        }
+    }
 
     //Initalize game object data
     void Start () {
@@ -21,8 +25,6 @@ public class PlayerMovement : MonoBehaviour {
         rb2D = GetComponent<Rigidbody2D>();
         inverseMoveTime = 1f / moveTime;
         isMoving = false;
-        startingLocation = transform.position;
-        exitLocation = exitNode.transform.position;
     }
 
     //This function occures on every game tick currently it allows a human to control the player
@@ -52,68 +54,11 @@ public class PlayerMovement : MonoBehaviour {
         }
     }
 
-    //This function is called by CanMoveUp/Right/Down/Left.
-    //It checks if the player can move in the specified direction.
-    private bool CanMove (float xDir, float yDir)
+    public void ChangePosition(Vector2 newPosition)
     {
-        //This waits for the player movement to finish the timeout is just in case something goes wrong to avoid an infinite loop.
-        int timeOut = 0;
-        while (isMoving)
-        {
-            timeOut++;
-            if (timeOut > 100000)
-            {
-                Debug.LogError("Error can move timeout");
-                return false;
-            }
-        }
-
-        //Now check if the play can move up.
-        RaycastHit2D hit;
-        boxCollider.enabled = false;
-        Vector2 end = new Vector2(transform.position.x + 1, transform.position.y);
-        hit = Physics2D.Linecast(transform.position, end, blockingLayer);
-        boxCollider.enabled = true;
-        if (hit.transform == null)
-            return true;
-
-        return false;
-    }
-
-    //Used externally
-    public bool CanMoveUp ()
-    {
-        return CanMove(0, 1);
-    }
-
-    //Used externally
-    public bool CanMoveRight()
-    {
-        return CanMove(1, 0);
-    }
-
-    //Used externally
-    public bool CanMoveDown()
-    {
-        return CanMove(0, -1);
-    }
-
-    //Used externally
-    public bool CanMoveLeft()
-    {
-        return CanMove(-1, 0);
-    }
-
-    //Used externally
-    public Vector2 StartingLocation ()
-    {
-        return startingLocation;
-    }
-
-    //Used externally
-    public Vector2 ExitLocation ()
-    {
-        return exitLocation;
+        isMoving = true;
+        transform.position = newPosition;
+        isMoving = false;
     }
 
     //This attempts to move the player in the provided direction.

@@ -7904,6 +7904,7 @@ GameObject:
   - component: {fileID: 925736403}
   - component: {fileID: 925736402}
   - component: {fileID: 925736404}
+  - component: {fileID: 925736405}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -8031,7 +8032,20 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   allowHumanMovement: 1
-  exitNode: {fileID: 617001718}
+--- !u!114 &925736405
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 925736399}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7cafebc9b43c171449051b21a4a696cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startingNode: {fileID: 1773197764}
+  YellowTile: {fileID: 21300000, guid: ff541bd08e136bd4f9cfdebd0c91f07e, type: 3}
+  RedTile: {fileID: 21300000, guid: fdaf4ab3f68612d4d8ff880d25e7b636, type: 3}
 --- !u!1001 &930726340
 Prefab:
   m_ObjectHideFlags: 0
@@ -16072,6 +16086,12 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1773197764 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 114327210201322444, guid: 358ebf98e8cfc81489c48619cdb3d5b0,
+    type: 2}
+  m_PrefabInternal: {fileID: 1068762656}
+  m_Script: {fileID: 11500000, guid: 217a57988078cda4fbeece26019cb9f0, type: 3}
 --- !u!1 &1781555662
 GameObject:
   m_ObjectHideFlags: 0
