@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class AIMovement : MonoBehaviour {
-    public TileGrid startingNode;           //Holds the data for the starting position.
-    public Sprite YellowTile;   //Used to visually mark a tile, use TileGridObject.ColorTile = YellowTile
-    public Sprite RedTile;      //Used to visually mark a tile, use TileGridObject.ColorTile = RedTile
+    public TileGrid startingNode;           //Holds the data for the starting position. Use startingNode.position.x
+    public Sprite YellowTile;               //Used to visually mark a tile, use TileGridObject.ColorTile = YellowTile
+    public Sprite RedTile;                  //Used to visually mark a tile, use TileGridObject.ColorTile = RedTile
 
     private TileGrid currentNode;           //Holds data for the node the player is curently on.
     private TileGrid previousNode;          //Holds data for the previous node the player was on.
-    private TileGrid[] frindgeNodes;
+    private TileGrid[] fringeNodes;         //Will hold the data for the fringe nodes.
     private PlayerMovement playerMovement;  //Access the functions in the player movement script.
 
 	// Use this for initialization
@@ -18,12 +18,13 @@ public class AIMovement : MonoBehaviour {
 
         currentNode = startingNode;
         previousNode = startingNode;
+        fringeNodes[0] = startingNode;  //When switching between fringe nodes, I recomend using PlyayerMovement.ChangePosition for the player.
     }
 	
 	// Update is called once per frame
 	void Update ()
     {
-        if (!playerMovement.IsMoving)   //Wait untill the player.
+        if (!playerMovement.IsMoving)   //Wait untill the player stops moving. This is important don't remove.
         {
             DummyAIMove();
         }
