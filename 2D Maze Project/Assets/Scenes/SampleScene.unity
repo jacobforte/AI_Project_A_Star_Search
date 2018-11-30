@@ -8046,6 +8046,7 @@ MonoBehaviour:
   startingNode: {fileID: 1773197764}
   YellowTile: {fileID: 21300000, guid: ff541bd08e136bd4f9cfdebd0c91f07e, type: 3}
   RedTile: {fileID: 21300000, guid: fdaf4ab3f68612d4d8ff880d25e7b636, type: 3}
+  GreenTile: {fileID: 21300000, guid: 5445b92dad5e49c4b8ef2be29c3507a9, type: 3}
 --- !u!1001 &930726340
 Prefab:
   m_ObjectHideFlags: 0

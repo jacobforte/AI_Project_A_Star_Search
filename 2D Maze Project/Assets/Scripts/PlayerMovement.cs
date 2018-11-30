@@ -54,10 +54,10 @@ public class PlayerMovement : MonoBehaviour {
         }
     }
 
-    public void ChangePosition(Vector2 newPosition)
+    public void ChangePosition(TileGrid newPosition)
     {
         isMoving = true;
-        transform.position = newPosition;
+        transform.position = newPosition.transform.position;
         isMoving = false;
     }
 

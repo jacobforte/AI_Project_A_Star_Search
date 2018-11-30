@@ -57,15 +57,6 @@ public class TileGrid : MonoBehaviour
         boxCollider2D.enabled = true;
     }
 
-    private float distanceFromEnd;
-    public float DistanceFromEnd
-    {
-        get
-        {
-            return distanceFromEnd;
-        }
-    }
-
     private TileGrid tileUp;
     public TileGrid TileUp
     {
@@ -101,7 +92,7 @@ public class TileGrid : MonoBehaviour
             return tileLeft;
         }
     }
-    
+
     public Sprite ColorTile
     {
         get
@@ -139,6 +130,30 @@ public class TileGrid : MonoBehaviour
         set
         {
             distanceFromStart = value;
+        }
+    }
+
+    //Used to track straight line distance to end
+    private float distanceFromEnd;
+    public float DistanceFromEnd
+    {
+        get
+        {
+            return distanceFromEnd;
+        }
+    }
+
+    //Used when backtracking to highling the best path at the end.
+    private TileGrid backtrackTile;
+    public TileGrid BacktrackTile
+    {
+        get
+        {
+            return backtrackTile;
+        }
+        set
+        {
+            backtrackTile = value;
         }
     }
 }
