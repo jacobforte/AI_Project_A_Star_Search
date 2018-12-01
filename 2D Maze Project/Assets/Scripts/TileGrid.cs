@@ -9,15 +9,18 @@ public class TileGrid : MonoBehaviour
 
     private BoxCollider2D boxCollider2D;
 
+
     private void Start()
     {
         boxCollider2D = GetComponent<BoxCollider2D>();
         isVisited = false;
-        distanceFromStart = 1000000;
+        //distanceFromStart;
 
         //Get the distance from the end.
         Vector2 exit = GameObject.FindGameObjectWithTag("Exit").transform.position;
-        distanceFromEnd = Mathf.Sqrt(Mathf.Abs(transform.position.x - exit.x) + Mathf.Abs(transform.position.y - exit.y));
+
+        distanceFromEnd = Mathf.Sqrt(Mathf.Pow((transform.position.x - exit.x), 2f)
+                         + Mathf.Pow((transform.position.y - exit.y), 2f));
 
         //Get the adjacent tiles not blocked by walls.
         RaycastHit2D wallHit, tileHit;
@@ -56,6 +59,8 @@ public class TileGrid : MonoBehaviour
         }
         boxCollider2D.enabled = true;
     }
+
+
 
     private TileGrid tileUp;
     public TileGrid TileUp
@@ -119,7 +124,7 @@ public class TileGrid : MonoBehaviour
         }
     }
 
-    //Used to track Manhatten distance
+    //Used to track number of tiles from the start
     private float distanceFromStart;
     public float DistanceFromStart
     {
