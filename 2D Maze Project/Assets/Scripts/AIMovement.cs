@@ -1,24 +1,28 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class AIMovement : MonoBehaviour
 {
-    // setup in unity Holds the data for the starting position.
-    public TileGrid startingNode;
-    // setup in unity as the ending tile.
-    public TileGrid endingNode;
-    public Sprite YellowTile;   //Used to visually mark a tile, use TileGridObject.ColorTile = YellowTile
-    public Sprite RedTile;      //Used to visually mark a tile, use TileGridObject.ColorTile = RedTile
-    public Sprite GreenTile;    //Used to visually mark a tile, use TileGridObject.ColorTile = GreenTile
-    public Sprite PurpleTile;
-    public float updateRate = 0.0f; //0.0 Is default value, if you want to use this, use the variable attached to the player.
 
-    private TileGrid currentNode;           //Holds data for the node the player is curently on.
-    private TileGrid backtrackNode;          //Holds data for the previous node the player was on.
+    public TileGrid startingNode; // setup in unity Holds the data for the starting position.
+    public TileGrid endingNode; // setup in unity as the ending tile.
+
+    // use TileGridObject.ColorTile = YellowTile
+    public Sprite YellowTile;   //Used to visually mark a visited tile
+    public Sprite RedTile;      //Used to visually mark an ending tile
+    public Sprite GreenTile;    //Used to visually mark a path tile
+    public Sprite PurpleTile;   //Used to visually mark a fringe node tile
+
+
+    public float updateRate = 0.0f;        // 0.0 Is default value, if you want to use this, 
+                                           // use the variable attached to the player.
+
+    private TileGrid currentNode;          // Holds data for the node the player is curently on.
+    private TileGrid backtrackNode;        // Holds data for the previous node the player was on.
     private List<TileGrid> fringeNodes;
-    private List<float> nodeDistances;
-    private PlayerMovement playerMovement;  //Access the functions in the player movement script.
+    private PlayerMovement playerMovement; //Access the functions in the player movement script.
 
 
     // Use this for initialization
@@ -27,14 +31,15 @@ public class AIMovement : MonoBehaviour
         playerMovement = GetComponent<PlayerMovement>();
         startingNode.DistanceFromStart = 0;
 
+        startingNode.IsVisited = true;
+        startingNode.ColorTile = YellowTile;
         currentNode = startingNode;
         fringeNodes = new List<TileGrid>();
-        nodeDistances = new List<float>();
-
         InvokeRepeating("SlowUpdate", 0.0f, updateRate);
     }
 
-    // Slow update is used so us humans can see what is going on change the updateRate variable on teh player object to change this.
+    // Slow update is used so us humans can see what is going on change the 
+    // updateRate variable on teh player object to change this.
     void SlowUpdate()
     {
         if (!playerMovement.IsMoving)   //Wait untill the player stops moving.
@@ -54,9 +59,6 @@ public class AIMovement : MonoBehaviour
                 }
                 startingNode.ColorTile = GreenTile;
             }
-            // color currentNode to highlight path.
-            // current node = backtrackNode.
-
 
         }
     }
@@ -67,31 +69,22 @@ public class AIMovement : MonoBehaviour
     // move to that node.
     private void ReallyIncreadiblySmartAIMove()
     {
-
-        // Use playerMovement.ChangePosition(currentNode); 
-        // to move the player directly to a fringe node.
-
-
-        // set color and distance of current tile.
-        // color should change to red if visited already.
-        currentNode.ColorTile = YellowTile;
-        currentNode.IsVisited = true;
-
-
         // If the tile above the player not blocked by a wall 
         // AND the tile above is not the visited tile. 
         if (currentNode.TileUp != null && !currentNode.TileUp.IsVisited)
         {
             if (!isAFringeNode(currentNode.TileUp))
             {
+                // set distance from the start to be 1 + current distance.
                 currentNode.TileUp.DistanceFromStart = currentNode.DistanceFromStart + 1;
+                // get back track tile to be current spot.
                 currentNode.TileUp.BacktrackTile = currentNode;
+                // find distance and set it in the tile.
+                currentNode.TileUp.AStarDist = findDistance(currentNode.TileUp);
+                // color tile purple.
+                currentNode.TileUp.ColorTile = PurpleTile;
+                // add tile to list of fringe nodes.
                 fringeNodes.Add(currentNode.TileUp);
-
-                // set backTracktile to currentNode
-
-                float aStarDist = findDistance(currentNode.TileUp);
-                nodeDistances.Add(aStarDist);
             }
 
         }
@@ -100,11 +93,11 @@ public class AIMovement : MonoBehaviour
             if (!isAFringeNode(currentNode.TileRight))
             {
                 currentNode.TileRight.DistanceFromStart = currentNode.DistanceFromStart + 1;
-
                 currentNode.TileRight.BacktrackTile = currentNode;
+                currentNode.TileRight.AStarDist = findDistance(currentNode.TileRight);
+                currentNode.TileRight.ColorTile = PurpleTile;
+
                 fringeNodes.Add(currentNode.TileRight);
-                float aStarDist = findDistance(currentNode.TileRight);
-                nodeDistances.Add(aStarDist);
             }
         }
         if (currentNode.TileDown != null && !currentNode.TileDown.IsVisited)
@@ -112,72 +105,58 @@ public class AIMovement : MonoBehaviour
             if (!isAFringeNode(currentNode.TileDown))
             {
                 currentNode.TileDown.DistanceFromStart = currentNode.DistanceFromStart + 1;
-
                 currentNode.TileDown.BacktrackTile = currentNode;
-                fringeNodes.Add(currentNode.TileDown);
-                float aStarDist = findDistance(currentNode.TileDown);
-                nodeDistances.Add(aStarDist);
+                currentNode.TileDown.AStarDist = findDistance(currentNode.TileDown);
+                currentNode.TileDown.ColorTile = PurpleTile;
 
+                fringeNodes.Add(currentNode.TileDown);
             }
         }
         if (currentNode.TileLeft != null && !currentNode.TileLeft.IsVisited)
         {
-            currentNode.TileLeft.DistanceFromStart = currentNode.DistanceFromStart + 1;
 
-            currentNode.TileLeft.BacktrackTile = currentNode;
             if (!isAFringeNode(currentNode.TileLeft))
             {
+                currentNode.TileLeft.DistanceFromStart = currentNode.DistanceFromStart + 1;
+                currentNode.TileLeft.BacktrackTile = currentNode;
+                currentNode.TileLeft.AStarDist = findDistance(currentNode.TileLeft);
+                currentNode.TileLeft.ColorTile = PurpleTile;
+
                 fringeNodes.Add(currentNode.TileLeft);
-                float aStarDist = findDistance(currentNode.TileLeft);
-                nodeDistances.Add(aStarDist);
             }
         }
 
-        // print names of tile to make sure they are added correctly
-        // foreach(TileGrid Tile in fringeNodes){
-        //     Debug.Log(Tile.gameObject.name);
-        // }
-
-
-        for (int i = 0; i < nodeDistances.Count; ++i)
+        // print distances and names of fringe nodes for checking.
+        for (int i = 0; i < fringeNodes.Count; ++i)
         {
-            print(fringeNodes[i].DistanceFromEnd);
-            print(fringeNodes[i].gameObject.name);
+            Debug.Log(("Astar dis = " + fringeNodes[i].AStarDist + " Object Name = " + fringeNodes[i].gameObject.name));
         }
+        print("END OF LIST!!");
 
-        // FIND THE BEST CHOICE FROM THE FRINDGE NODES.
-        // iterate through the distances list and find the index with the lowest value.
-        // 
-        int indexOfNextBestNode = 0;
-        float bestDistance = nodeDistances[0];
-        for (int i = 1; i < nodeDistances.Count; ++i)
+
+        // Find the best choice from the fringe nodes
+        TileGrid nextNode = fringeNodes[0];
+        int index = 0;
+        for (int i = 1; i < fringeNodes.Count; ++i)
         {
-            if (nodeDistances[i] < bestDistance)
+            if (fringeNodes[i].AStarDist < nextNode.AStarDist)
             {
-                indexOfNextBestNode = i;
+                nextNode = fringeNodes[i];
+                index = i;
             }
         }
-
-        // get node from fringenodes
-        // remove it from the fringenodes and nodeDistances lists
-        TileGrid nextNode = fringeNodes[indexOfNextBestNode];
-
-        // print("Taking node:");
-        // print(nextNode);
-
-        fringeNodes.RemoveAt(indexOfNextBestNode);
-        nodeDistances.RemoveAt(indexOfNextBestNode);
-
-
-
+        // remove node from list.
+        fringeNodes.RemoveAt(index);
         // move the player to the fringe node.
         playerMovement.ChangePosition(nextNode);
         currentNode = nextNode;
 
-        if (currentNode == endingNode)
-        {
-            return;
-        }
+
+
+        // set color and visit of current tile
+        currentNode.ColorTile = YellowTile;
+        currentNode.IsVisited = true;
+
     }
 
     private float findDistance(TileGrid n)

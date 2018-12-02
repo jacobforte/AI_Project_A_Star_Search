@@ -14,7 +14,6 @@ public class TileGrid : MonoBehaviour
     {
         boxCollider2D = GetComponent<BoxCollider2D>();
         isVisited = false;
-        //distanceFromStart;
 
         //Get the distance from the end.
         Vector2 exit = GameObject.FindGameObjectWithTag("Exit").transform.position;
@@ -145,6 +144,20 @@ public class TileGrid : MonoBehaviour
         get
         {
             return distanceFromEnd;
+        }
+    }
+
+    //Used to track total value of distance
+    private float aStarDist;
+    public float AStarDist
+    {
+        get
+        {
+            return aStarDist;
+        }
+        set
+        {
+            aStarDist = value;
         }
     }
 
