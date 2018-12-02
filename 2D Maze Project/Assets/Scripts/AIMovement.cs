@@ -11,6 +11,7 @@ public class AIMovement : MonoBehaviour
     public Sprite YellowTile;   //Used to visually mark a tile, use TileGridObject.ColorTile = YellowTile
     public Sprite RedTile;      //Used to visually mark a tile, use TileGridObject.ColorTile = RedTile
     public Sprite GreenTile;    //Used to visually mark a tile, use TileGridObject.ColorTile = GreenTile
+    public Sprite PurpleTile;
     public float updateRate = 0.0f; //0.0 Is default value, if you want to use this, use the variable attached to the player.
 
     private TileGrid currentNode;           //Holds data for the node the player is curently on.
