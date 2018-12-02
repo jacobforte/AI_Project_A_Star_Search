@@ -49,10 +49,10 @@ public class AIMovement : MonoBehaviour
                 backtrackNode = currentNode;
                 while (backtrackNode != startingNode)
                 {
-                    backtrackNode.ColorTile = RedTile;
+                    backtrackNode.ColorTile = GreenTile;
                     backtrackNode = backtrackNode.BacktrackTile;
                 }
-                startingNode.ColorTile = RedTile;
+                startingNode.ColorTile = GreenTile;
             }
             // color currentNode to highlight path.
             // current node = backtrackNode.
